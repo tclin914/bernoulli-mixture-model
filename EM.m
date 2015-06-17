@@ -1,9 +1,4 @@
-function EM()
-
-    clc; clear; tic;
-    addpath('./utils');
-    [train, test] = DataPrep('./data');
-    toc;
+function [mu, pi_, z] = EM(train, test)
 
     K = 40;
     N = 50000;
@@ -32,13 +27,11 @@ function EM()
     
     z = zeros(N, K);
     
-    for r = 1:1
+    for r = 1:3
         ExpectationStep();
         disp(r);
         MaximizationStep();
     end
-    
-    ShowModel(mu, pi_, 5, 8, 1:40);
     
     function ExpectationStep()
         
