@@ -15,16 +15,16 @@ function EM()
     end
     
     mu = zeros(K, D);
-    for k = 1:K
+    for w = 1:K
         
         normalizationFactor = 0;
-        for i = 1:D
-            mu(k, i) = rand();
-            normalizationFactor = normalizationFactor + mu(k, i);
+        for g = 1:D
+            mu(w, g) = rand();
+            normalizationFactor = normalizationFactor + mu(w, g);
         end
         
-        for i = 1:D
-            mu(k, i) = mu(k, i) / normalizationFactor;
+        for g = 1:D
+            mu(w, g) = mu(w, g) / normalizationFactor;
         end
     end
     
@@ -32,9 +32,9 @@ function EM()
     
     z = zeros(N, K);
     
-    for i = 1:5
+    for r = 1:1
         ExpectationStep();
-        disp(i);
+        disp(r);
         MaximizationStep();
     end
     
@@ -66,7 +66,7 @@ function EM()
     function MaximizationStep()
 
         for k = 1:K
-            pik(k) = (Nm(k) / N);
+            pi_(k) = (Nm(k) / N);
         end
     
         for k = 1:K
@@ -113,17 +113,3 @@ function EM()
     end
 
 end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
