@@ -1,3 +1,3 @@
 
-double **readMNIST(const char *filename, int num_images, int data_image);
+void readMNIST(const char *imagefile, const char *labefile, int num_images, int ***imagedata, int **labeldata);
 

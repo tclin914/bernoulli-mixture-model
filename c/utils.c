@@ -10,42 +10,42 @@ int reverseInt(int i) {
     return ((int)ch1 << 24) + ((int)ch2 << 16) + ((int)ch3 << 8) + ch4;
 }
 
-double **readMNIST(const char *filename, int num_images, int data_image) {
+void readMNIST(const char *imagefile,const char *labelfile, int num_images, int ***imagedata, int **labeldata) {
     /* read digits */
-    FILE *file = fopen(filename, "r");
+    FILE *file = fopen(imagefile, "r");
     if (file == NULL) {
-        fprintf(stderr, "%s open failure\n", filename);
+        fprintf(stderr, "%s open failure\n", imagefile);
         exit(1);
     }
    
     int header = 0;
-    int num_of_images = 0;
+    int count = 0;
     int num_rows = 0;
     int num_cols = 0;
 
     fread(&header, sizeof(header), 1, file);
     header = reverseInt(header);
     if (header != 2051) {
-        fprintf(stderr, "Invalid image file header");
+        fprintf(stderr, "Invalid image file header\n");
         exit(1);
     }
-    printf("header = %d\n", header);
     
-    fread(&num_of_images, sizeof(num_of_images), 1, file);
-    num_of_images = reverseInt(num_of_images);
-    printf("num_of_images = %d\n", num_of_images);
+    fread(&count, sizeof(count), 1, file);
+    count = reverseInt(count);
+    if (count < num_images) {
+        fprintf(stderr, "Trying to read too many digits\n");
+        exit(1);
+    }
 
     fread(&num_rows, sizeof(num_rows), 1, file);
     num_rows = reverseInt(num_rows);
-    printf("num_rows = %d\n", num_rows);
 
     fread(&num_cols, sizeof(num_cols), 1, file);
     num_cols = reverseInt(num_cols);
-    printf("num_cols = %d\n", num_cols);
 
-    double **data = (double**)malloc(sizeof(double*) * num_images);
+    int **images = (int**)malloc(sizeof(int*) * num_images);
     for (int i = 0; i < num_images; i++) {
-        data[i] = (double*)malloc(sizeof(double) * num_rows * num_cols);
+        images[i] = (int*)malloc(sizeof(int) * num_rows * num_cols);
     }
 
     for (int i = 0; i < num_images; i++) {
@@ -53,14 +53,41 @@ double **readMNIST(const char *filename, int num_images, int data_image) {
             for (int k = 0; k < num_cols; k++) {
                 unsigned char temp = 0;
                 fread(&temp, sizeof(temp), 1, file);
-                data[i][num_rows * j + k] = (double)temp;
-                if (i < 3) {
-                    printf("data = %f\n", (double)temp);
-                    fflush(stdout);
-                }
-
+                images[i][num_rows * j + k] = ((double)temp / 255) > 0.5 ? 1 : 0;
             }
         }
     }
+    fclose(file);
+
+    /* read labes */
+    file = fopen(labelfile, "r");
+    if (file == NULL) {
+        fprintf(stderr, "%s open failure\n", labelfile);
+        exit(1);
+    }
+
+    fread(&header, sizeof(header), 1, file);
+    header = reverseInt(header);
+    if (header != 2049) {
+        fprintf(stderr, "Invalid label file header\n");
+        exit(1);
+    }
+
+    fread(&count, sizeof(count), 1, file);
+    if (count < num_images) {
+        fprintf(stderr, "Trying to read too many digits\n");
+        exit(1);
+    }
+
+    int *labels = (int*)malloc(sizeof(int) * num_images);
+    for (int i = 0; i < num_images; i++) {
+        unsigned char temp = 0;
+        fread(&temp, sizeof(temp), 1, file);
+        labels[i] = (int)temp;
+    }
+    fclose(file);
+
+    *imagedata = images;
+    *labeldata = labels;
 }
 
