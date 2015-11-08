@@ -3,24 +3,19 @@
 #include <math.h>
 #include <string.h>
 #include <stdio.h>
+#include "EM.h"
 
-#define K 40
-#define N 50000
-#define D 28 * 28
-
-void ExpectationStep(double *pi, double mu[K][D], int **x);
+void ExpectationStep(double z[N][K], double *pi, double mu[K][D], int **x);
 double ExpectationSubStep(int n, int k, double *pi, double mu[K][D], int **x); 
 
-void MaximizationStep(double *pi, double mu[K][D], int **x);
-double *Average(int m, int **x); 
-double Nm(int m);
+void MaximizationStep(double z[N][K], double *pi, double mu[K][D], int **x);
+double *Average(int m, int **x, double z[N][K]); 
+double Nm(int m, double z[N][K]);
 
-double z[N][K];
-
-void EM(int **train_images, int *train_labels, int **test_images, int *test_labels) {
+void EM(int **train_images, int *train_labels, int **test_images, int *test_labels, double mu[K][D], double *pi, double z[N][K]) {
     
-    double pi[K] = {1 / K};
-    double mu[K][D] = {{0}};
+    /* double pi[K] = {1 / K}; */
+    /* double mu[K][D] = {{0}}; */
 
     srand(time(NULL));
     /* normalization */
@@ -36,19 +31,14 @@ void EM(int **train_images, int *train_labels, int **test_images, int *test_labe
            mu[w][g] = mu[w][g] / normalizationFactor;
        }
     }
-    
-    memset(z, 0, sizeof(z));
 
-    int start = time(NULL);
     for (int i = 0; i < 3; i++) {
-        ExpectationStep(pi, mu, train_images);
-        MaximizationStep(pi, mu, train_images); 
+        ExpectationStep(z, pi, mu, train_images);
+        MaximizationStep(z, pi, mu, train_images); 
     }
-    int end = time(NULL);
-    printf("time = %d\n", end - start);
 }
 
-void ExpectationStep(double *pi, double mu[K][D], int **x) {
+void ExpectationStep(double z[N][K], double *pi, double mu[K][D], int **x) {
     int normalizationFactor;
     for (int n = 0; n < N; n++) {
         normalizationFactor = 0;
@@ -76,13 +66,13 @@ double ExpectationSubStep(int n, int k, double *pi, double mu[K][D], int **x) {
     return z_nk;
 }
 
-void MaximizationStep(double *pi, double mu[K][D], int **x) {
+void MaximizationStep(double z[N][K],double *pi, double mu[K][D], int **x) {
     for (int k = 0; k < K; k++) {
-        pi[k] = Nm(k) / N;
+        pi[k] = Nm(k, z) / N;
     } 
     double *average;
     for (int k = 0; k < K; k++) {
-        average = Average(k, x);
+        average = Average(k, x, z);
         
         for (int i = 0; i < D; i++) {
             mu[k][i] = average[i];
@@ -91,7 +81,7 @@ void MaximizationStep(double *pi, double mu[K][D], int **x) {
     free(average);
 }
 
-double *Average(int m, int **x) {
+double *Average(int m, int **x, double z[N][K]) {
     double *result = (double*)malloc(sizeof(double) * D);
     memset(result, 0, sizeof(double) * D);
     for (int i = 0; i < D; i++) {
@@ -99,14 +89,14 @@ double *Average(int m, int **x) {
             result[i] = result[i] + z[n][m] * x[n][i];
         }
     }
-    double currentNm = Nm(m);
+    double currentNm = Nm(m, z);
     for (int i = 0; i < D; i++) {
         result[i] = result[i] / currentNm;
     }
     return result;
 }
 
-double Nm(int m) {
+double Nm(int m, double z[N][K]) {
     int result = 0;
     for (int n = 0; n < N; n++) {
         result = result + z[n][m];
