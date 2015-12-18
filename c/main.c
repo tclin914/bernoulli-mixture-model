@@ -25,13 +25,20 @@ int main(int argc, const char *argv[])
     int *test_labels;
     readMNIST(TEST_IMAGE, TEST_LABEL, 10000, &test_images, &test_labels);
 
-    double pi[K] = {1/ K};
-    double mu[K][D] = {{0}};
+    double pi[K];
+    double mu[K][D] = {{ 0}};
     memset(z, 0, sizeof(z));
+    for (int i = 0; i < K; i++) {
+        pi[i] = 1 / (double)K;
+    }
 
     EM(train_images, train_labels, test_images, test_labels, mu, pi, z);
 
-    loglikelihood(train_images, mu, pi, z);    
+    /* loglikelihood(train_images, mu, pi, z);     */
+
+    for (int i = 0; i < K; i++) {
+        printf("pi[%d] = %f\n", i, pi[i]);
+    }
 
     int end = time(NULL);
     printf("time = %d\n", end - start);
