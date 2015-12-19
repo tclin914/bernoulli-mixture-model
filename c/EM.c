@@ -3,6 +3,7 @@
 #include <math.h>
 #include <string.h>
 #include <stdio.h>
+#include <float.h>
 #include "EM.h"
 
 void ExpectationStep(double z[N][K], double *pi, double mu[K][D], int **x);
@@ -108,7 +109,27 @@ double Nm(int m, double z[N][K]) {
     return result;
 }
 
+int GetCluster(double mu[K][D], int *image) {
+    double maxClusterSum = -DBL_MAX;
+    int maxCluster = -1;
+    for (int k = 0; k < K; k++) {
+        double currentClusterSum = 0.0;
+        for (int i = 0; i < D; i++) {
+            /* printf("image[%d] = %d\n", i, image[i]); */
+            /* printf("mu[%d][%d] = %f\n", k, i, mu[k][i]); */
+            /* printf("currentClusterSum = %f\n", currentClusterSum); */
+            currentClusterSum += image[i] ? mu[k][i] : 1.0 - mu[k][i];
+        }
 
+        if (currentClusterSum > maxClusterSum) {
+            maxClusterSum = currentClusterSum;
+            maxCluster = k;
+            /* printf("maxClusterSum = %f\n", maxClusterSum); */
+            /* printf("maxCluster = %d\n", maxCluster); */
+        }
+    }
+    return maxCluster;
+}
 
 
 
