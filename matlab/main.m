@@ -1,6 +1,6 @@
 clc; clear; tic;
 addpath('./utils');
-[train, test] = DataPrep('./data');
+[train, test] = DataPrep('../data');
 toc;
 
 [mu, pi_, z] = EM(train, test);
