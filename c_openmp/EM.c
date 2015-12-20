@@ -66,11 +66,12 @@ void ExpectationStep(double z[N][K], double *pi, double mu[K][D], int **x) {
 }
 
 double ExpectationSubStep(int n, int k, double *pi, double mu[K][D], int **x) {
-    double z_nk = pi[k];
+    double z_nk = 1.0;
+/* #pragma omp parallel for reduction(*:z_nk) */
     for (int i = 0; i < D; i++) {
         z_nk = z_nk * pow(mu[k][i], x[n][i]) * pow(1.0 - mu[k][i], 1.0 - x[n][i]);      
     }
-    return z_nk;
+    return z_nk * pi[k];
 }
 
 void MaximizationStep(double z[N][K],double *pi, double mu[K][D], int **x) {
@@ -122,7 +123,7 @@ int GetCluster(double mu[K][D], int *image) {
     int maxCluster = -1;
     for (int k = 0; k < K; k++) {
         double currentClusterSum = 0.0;
-#pragma omp parallel for reduction(+:currentClusterSum)
+/* #pragma omp parallel for reduction(+:currentClusterSum) */
         for (int i = 0; i < D; i++) {
             currentClusterSum += image[i] ? mu[k][i] : 1.0 - mu[k][i];
         }

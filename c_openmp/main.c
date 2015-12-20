@@ -24,7 +24,7 @@ int main(int argc, const char *argv[])
 {
     /* openmp environment setting */
     omp_set_dynamic(0);
-    omp_set_num_threads(get_nprocs());
+    omp_set_num_threads(8);
     /* printf("%d\n", get_nprocs()); */
 
     for (int i = 0; i < T_LAST; i++) {
@@ -100,6 +100,15 @@ int main(int argc, const char *argv[])
     printf("ErrRate = %f\n", errNum / (double)10000);
 
     /* loglikelihood(train_images, mu, pi, z);     */
+
+    for (int i = 0; i < N; i++) {
+        free(train_images[i]);
+    }
+    free(train_labels);
+    for (int i = 0; i < 10000; i++) {
+        free(test_images[i]);
+    }
+    free(test_images[i]);
 
     return 0;
 }

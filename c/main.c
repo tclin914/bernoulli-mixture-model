@@ -1,20 +1,32 @@
 #include <stdio.h>
-#include <time.h>
+#include <stdlib.h>
 #include <string.h>
+#include <sys/sysinfo.h>
 #include "utils.h"
 #include "EM.h"
 #include "loglikelihood.h"
+#include "timer.h"
 
 #define TRAIN_IMAGE "../data/train-images-idx3-ubyte"
 #define TRAIN_LABEL "../data/train-labels-idx1-ubyte"
 #define TEST_IMAGE "../data/t10k-images-idx3-ubyte"
 #define TEST_LABEL "../data/t10k-labels-idx1-ubyte"
 
+#define T_READ 0
+#define T_EM   1
+#define T_TEST 2
+#define T_LAST 3
+
 double z[N][K];
 
 int main(int argc, const char *argv[])
 {
-    int start = time(NULL);
+    for (int i = 0; i < T_LAST; i++) {
+        timer_clear(i);
+    }
+
+    timer_start(T_READ);
+
     /* read train data */
     int **train_images;
     int *train_labels;
@@ -25,6 +37,12 @@ int main(int argc, const char *argv[])
     int *test_labels;
     readMNIST(TEST_IMAGE, TEST_LABEL, 10000, &test_images, &test_labels);
 
+    timer_stop(T_READ);
+    
+    printf("Read MNIST data time = %f seconds\n", timer_read(T_READ));
+
+    timer_start(T_EM);
+    
     double pi[K];
     double mu[K][D] = {{0}};
     memset(z, 0, sizeof(z));
@@ -33,6 +51,12 @@ int main(int argc, const char *argv[])
     }
 
     EM(train_images, train_labels, test_images, test_labels, mu, pi, z);
+
+    timer_stop(T_EM);
+
+    printf("EM Algorithm time = %f seconds\n", timer_read(T_EM));
+
+    timer_start(T_TEST);
 
     int digitsOfClusters[K][10] = {{0}};
     for (int i = 0; i < N; i++) {
@@ -59,15 +83,24 @@ int main(int argc, const char *argv[])
         if (maxLabelOfClusters[clusterNumber] != test_labels[i]) {
             errNum++;
         }
-        /* printf("Label = %d test_label = %d\n", maxLabelOfClusters[clusterNumber], test_labels[i]); */
     }
-    printf("errNum = %d\n", errNum);
-    printf("errRate = %f\n", errNum / (double)10000);
+    
+    timer_stop(T_TEST);
+
+    printf("Test time  = %f seconds\n", timer_read(T_TEST));
+
+    printf("ErrNum = %d\n", errNum);
+    printf("ErrRate = %f\n", errNum / (double)10000);
 
     /* loglikelihood(train_images, mu, pi, z);     */
 
-    int end = time(NULL);
-    printf("time = %d\n", end - start);
-
+    for (int i = 0; i < N; i++) {
+        free(train_images[i]);
+    }
+    free(train_labels);
+    for (int i = 0; i < 10000; i++) {
+        free(test_images[i]);
+    }
+    free(test_labels);
     return 0;
 }

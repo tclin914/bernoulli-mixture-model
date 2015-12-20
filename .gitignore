@@ -1,3 +1,4 @@
 /c/main
+/c/*.o
 /c_openmp/main
 /c_openmp/*.o
