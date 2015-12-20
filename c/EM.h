@@ -1,7 +1,7 @@
 #ifndef EM_H
 #define EM_H
 
-#define K 70
+#define K 90
 #define N 50000
 #define D 28 *28
 
