@@ -2,3 +2,5 @@
 /c/*.o
 /c_openmp/main
 /c_openmp/*.o
+/c_cuda/main
+/c_cuda/*.o
