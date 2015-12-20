@@ -1,23 +1,31 @@
 All:main
 
-CFLAGS=-std=c99
+CFLAGS=-std=gnu99
 
-OBJ=loglikelihood.o EM.o utils.o timer.o 
+OBJ=loglikelihood.o EM.o utils.o timer.o main.o
 
-main: main.c $(OBJ)
-	gcc $(CFLAGS) -fopenmp $(OBJ) $< -o $@ -lm
+CS =loglikelihood.cu EM.cu utils.cu timer.cu
 
-loglikelihood.o:loglikelihood.c
-	gcc $(CFLAGS) $< -c -o $@ 
+main: main.cu $(CS)
+	nvcc $(CS) $< -o $@ -lm
 
-EM.o:EM.c
-	gcc $(CFLAGS) -fopenmp $< -c -o $@
+# main: main.c $(OBJ)
+	# nvcc -arch=sm_20 $(OBJ) 
 
-utils.o:utils.c
-	gcc $(CFLAGS) $< -c -o $@
+# main.o: main.c
+	# gcc $(CFLAGS) $< -c -o $@
 
-timer.o:timer.c
-	gcc $(CFLAGS) $< -c -o $@
+# loglikelihood.o:loglikelihood.c
+	# gcc $(CFLAGS) $< -c -o $@ 
+
+# EM.o:EM.cu
+	# nvcc $< -c -o $@
+
+# utils.o:utils.c
+	# gcc $(CFLAGS) $< -c -o $@
+
+# timer.o:timer.c
+	# gcc $(CFLAGS) $< -c -o $@
 
 clean:
 	rm main
