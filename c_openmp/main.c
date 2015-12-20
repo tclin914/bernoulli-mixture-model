@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <sys/sysinfo.h>
 #include "utils.h"
@@ -108,7 +109,7 @@ int main(int argc, const char *argv[])
     for (int i = 0; i < 10000; i++) {
         free(test_images[i]);
     }
-    free(test_images[i]);
+    free(test_images);
 
     return 0;
 }
