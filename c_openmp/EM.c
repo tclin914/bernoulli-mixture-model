@@ -8,13 +8,6 @@
 
 #include <omp.h>
 
-void ExpectationStep(double z[N][K], double *pi, double mu[K][D], int **x);
-double ExpectationSubStep(int n, int k, double *pi, double mu[K][D], int **x); 
-
-void MaximizationStep(double z[N][K], double *pi, double mu[K][D], int **x);
-double *Average(int m, int **x, double z[N][K]); 
-double Nm(int m, double z[N][K]);
-
 void EM(int **train_images, int *train_labels, int **test_images, int *test_labels, double mu[K][D], double *pi, double z[N][K]) {
 
     srand(time(NULL));
