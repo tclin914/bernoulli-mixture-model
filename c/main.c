@@ -20,12 +20,6 @@ int main(int argc, const char *argv[])
     int *train_labels;
     readMNIST(TRAIN_IMAGE, TRAIN_LABEL, 50000, &train_images, &train_labels);
 
-    /* for (int i = 0; i < 10000; i++) { */
-        /* for (int j = 0; j < 28 * 28; j++) { */
-            /* printf("train_images[%d][%d] = %d\n", i, j, train_images[i][j]); */
-        /* } */
-    /* } */
-
     /* read test data */
     int **test_images;
     int *test_labels;
@@ -70,39 +64,7 @@ int main(int argc, const char *argv[])
     printf("errNum = %d\n", errNum);
     printf("errRate = %f\n", errNum / (double)10000);
 
-
-    /* for (int k = 0; k < 30; k++) { */
-        /* int clusterNumber = GetCluster(mu, test_images[k]); */
-        /* printf("clusterNumber = %d\n", clusterNumber); */
-        /* int digitsInTheSameCluster[10] = {0}; */
-        /* for (int i = 0; i < N; i++) { */
-            /* if (clusterNumber == GetCluster(mu, train_images[i])) { */
-                /* digitsInTheSameCluster[train_labels[i]]++;         */
-            /* } */
-        /* } */
-
-        /* int maxDigits = -1; */
-        /* int maxLabel = -1; */
-        /* for (int i = 0; i < 10; i++) { */
-            /* if (digitsInTheSameCluster[i] > maxDigits) { */
-                /* maxDigits = digitsInTheSameCluster[i]; */
-                /* maxLabel = i; */
-            /* } */
-        /* } */
-        /* printf("maxLabel = %d\n", maxLabel); */
-        /* printf("test_label = %d\n", test_labels[k]); */
-    /* } */
-    /* for (int k = 0; k < K; k++) { */
-        /* for (int i = 0; i < D; i++) { */
-            /* printf("mu[%d][%d] = %f\n", k, i, mu[k][i]); */
-        /* } */
-    /* } */
-
     /* loglikelihood(train_images, mu, pi, z);     */
-
-    /* for (int i = 0; i < K; i++) { */
-        /* printf("pi[%d] = %f\n", i, pi[i]); */
-    /* } */
 
     int end = time(NULL);
     printf("time = %d\n", end - start);
