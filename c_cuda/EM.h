@@ -1,7 +1,7 @@
 #ifndef EM_H
 #define EM_H
 
-#define K 40
+#define K 60
 #define N 50000
 #define D 28 *28
 
@@ -14,5 +14,5 @@ void MaximizationStep(double z[N][K], double *pi, double mu[K][D], int **x);
 double *Average(int m, int **x, double z[N][K]); 
 double Nm(int m, double z[N][K]);
 
-int GetCluster(double mu[K][D], int *image);
+int GetCluster(double *mu, int *image);
 #endif

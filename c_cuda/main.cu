@@ -57,41 +57,41 @@ int main(int argc, const char *argv[])
 
     printf("EM Algorithm time = %f seconds\n", timer_read(T_EM));
 
-    /* timer_start(T_TEST); */
+    timer_start(T_TEST);
 
-    /* int digitsOfClusters[K][10] = {{0}}; */
-    /* for (int i = 0; i < N; i++) { */
-        /* int clusterNumber = GetCluster(mu, train_images[i]); */
-        /* digitsOfClusters[clusterNumber][train_labels[i]]++; */
-    /* } */
+    int digitsOfClusters[K][10] = {{0}};
+    for (int i = 0; i < N; i++) {
+        int clusterNumber = GetCluster(mu, &train_images[D * i]);
+        digitsOfClusters[clusterNumber][train_labels[i]]++;
+    }
 
-    /* int maxLabelOfClusters[K] = {0}; */
-    /* for (int i = 0; i < K; i++) { */
-        /* int maxDigits = -1; */
-        /* int maxLabel = -1; */
-        /* for (int j = 0; j < 10; j++) { */
-            /* if (digitsOfClusters[i][j] > maxDigits) { */
-                /* maxDigits = digitsOfClusters[i][j]; */
-                /* maxLabel = j; */
-            /* } */
-        /* } */
-        /* maxLabelOfClusters[i] = maxLabel; */
-    /* } */
+    int maxLabelOfClusters[K] = {0};
+    for (int i = 0; i < K; i++) {
+        int maxDigits = -1;
+        int maxLabel = -1;
+        for (int j = 0; j < 10; j++) {
+            if (digitsOfClusters[i][j] > maxDigits) {
+                maxDigits = digitsOfClusters[i][j];
+                maxLabel = j;
+            }
+        }
+        maxLabelOfClusters[i] = maxLabel;
+    }
 
-    /* int errNum = 0; */
-    /* for (int i = 0; i < 10000; i++) { */
-        /* int clusterNumber = GetCluster(mu, test_images[i]); */
-        /* if (maxLabelOfClusters[clusterNumber] != test_labels[i]) { */
-            /* errNum++; */
-        /* } */
-    /* } */
+    int errNum = 0;
+    for (int i = 0; i < 10000; i++) {
+        int clusterNumber = GetCluster(mu, &test_images[D * i]);
+        if (maxLabelOfClusters[clusterNumber] != test_labels[i]) {
+            errNum++;
+        }
+    }
     
-    /* timer_stop(T_TEST); */
+    timer_stop(T_TEST);
 
-    /* printf("Test time  = %f seconds\n", timer_read(T_TEST)); */
+    printf("Test time  = %f seconds\n", timer_read(T_TEST));
 
-    /* printf("ErrNum = %d\n", errNum); */
-    /* printf("ErrRate = %f\n", errNum / (double)10000); */
+    printf("ErrNum = %d\n", errNum);
+    printf("ErrRate = %f\n", errNum / (double)10000);
 
     /* loglikelihood(train_images, mu, pi, z);     */
 
