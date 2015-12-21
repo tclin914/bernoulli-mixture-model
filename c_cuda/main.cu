@@ -17,7 +17,7 @@
 #define T_TEST 2
 #define T_LAST 3
 
-double z[N][K];
+double z[N * K];
 
 int main(int argc, const char *argv[])
 {
@@ -45,11 +45,11 @@ int main(int argc, const char *argv[])
     timer_start(T_EM);
     
     double pi[K];
-    double mu[K][D] = {{0}};
+    double mu[K * D] = {0};
     memset(z, 0, sizeof(z));
     for (i = 0; i < K; i++) {
         pi[i] = 1 / (double)K;
-    }
+    }    
 
     EM(train_images, train_labels, test_images, test_labels, mu, pi, z);
 
