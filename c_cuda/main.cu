@@ -59,6 +59,14 @@ int main(int argc, const char *argv[])
 
     timer_start(T_TEST);
 
+    /* int w, g; */
+    /* for (w = 0; w < K; w++) { */
+        /* for (g = 0; g < D; g++) { */
+            /* printf("mu[%d][%d] = %f\n", w, g, mu[D * w + g]); */
+        /* } */
+    /* } */
+
+
     int digitsOfClusters[K][10] = {{0}};
     for (int i = 0; i < N; i++) {
         int clusterNumber = GetCluster(mu, &train_images[D * i]);

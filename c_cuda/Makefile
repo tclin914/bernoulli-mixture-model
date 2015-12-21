@@ -29,4 +29,4 @@ main: main.cu $(CS)
 
 clean:
 	rm main
-	rm $(OBJ)
+

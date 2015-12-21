@@ -7,12 +7,5 @@
 
 void EM(int *train_images, int *train_labels, int *test_images, int *test_labels, double *mu, double *pi, double *z);
 
-void ExpectationStep(double z[N][K], double *pi, double mu[K][D], int **x);
-double ExpectationSubStep(int n, int k, double *pi, double mu[K][D], int **x); 
-
-void MaximizationStep(double z[N][K], double *pi, double mu[K][D], int **x);
-double *Average(int m, int **x, double z[N][K]); 
-double Nm(int m, double z[N][K]);
-
 int GetCluster(double *mu, int *image);
 #endif
